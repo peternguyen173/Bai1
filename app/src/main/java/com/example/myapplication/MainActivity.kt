@@ -1,89 +1,41 @@
 package com.example.myapplication
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.Email
+import com.example.myapplication.EmailAdapter
+import com.example.myapplication.R
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var etSourceAmount: EditText
-    private lateinit var etDestinationAmount: EditText
-    private lateinit var spinnerSourceCurrency: Spinner
-    private lateinit var spinnerDestinationCurrency: Spinner
-
-    private val exchangeRates = mapOf(
-        "USD" to 1.0,  // Base currency
-        "EUR" to 0.85,
-        "JPY" to 110.0,
-        "VND" to 24000.0
-    )
+    private lateinit var emailRecyclerView: RecyclerView
+    private lateinit var emailAdapter: EmailAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        etSourceAmount = findViewById(R.id.etSourceAmount)
-        etDestinationAmount = findViewById(R.id.etDestinationAmount)
-        spinnerSourceCurrency = findViewById(R.id.spinnerSourceCurrency)
-        spinnerDestinationCurrency = findViewById(R.id.spinnerDestinationCurrency)
+        // Initialize RecyclerView
+        emailRecyclerView = findViewById(R.id.recyclerViewEmails)
+        emailRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Tạo adapter cho Spinner với danh sách đơn vị tiền tệ
-        val currencies = exchangeRates.keys.toList()
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, currencies)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        // Sample Data in Vietnamese
+        val emails = listOf(
+            Email("Zalo", "Cập nhật điều khoản mới", "Chúng tôi đã cập nhật các điều khoản sử dụng...", "12:34 PM"),
+            Email("Ngân hàng ACB", "Thông báo tài khoản của bạn", "Tài khoản của bạn có giao dịch mới...", "11:22 AM"),
+            Email("Shopee", "Chương trình khuyến mãi 10.10", "Mua sắm thỏa thích với giảm giá 50%...", "11:04 AM"),
+            Email("Điện Máy Xanh", "Giảm giá mùa hè", "Mua sắm tiết kiệm với các ưu đãi hấp dẫn...", "10:26 AM"),
+            Email("Vietjet", "Mở bán vé máy bay giá rẻ", "Chỉ từ 199k, đặt vé ngay để nhận ưu đãi...", "9:45 AM"),
+            Email("FPT Shop", "Chương trình giảm giá cuối năm", "Giảm giá 20% cho tất cả sản phẩm công nghệ...", "8:30 AM"),
+            Email("VnExpress", "Tin tức nóng hôm nay", "Cập nhật thông tin nhanh chóng, tin cậy từ...", "7:15 AM"),
+            Email("Tiki", "Mua hàng giá sốc", "Giảm ngay 50% cho các sản phẩm công nghệ...", "6:50 AM"),
+            Email("Netflix", "Phim mới bạn không thể bỏ lỡ", "Khám phá những bộ phim hấp dẫn trên Netflix...", "5:20 AM")
+        )
 
-        spinnerSourceCurrency.adapter = adapter
-        spinnerDestinationCurrency.adapter = adapter
-
-        // Lắng nghe sự thay đổi của số tiền nguồn
-        etSourceAmount.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                convertCurrency()
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
-
-        // Lắng nghe sự thay đổi của Spinner tiền tệ
-        val spinnerListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
-                convertCurrency()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
-
-        spinnerSourceCurrency.onItemSelectedListener = spinnerListener
-        spinnerDestinationCurrency.onItemSelectedListener = spinnerListener
-    }
-
-    private fun convertCurrency() {
-        val sourceAmountText = etSourceAmount.text.toString()
-
-        if (sourceAmountText.isEmpty()) {
-            etDestinationAmount.setText("")
-            return
-        }
-
-        // Lấy đơn vị tiền tệ đã chọn
-        val sourceCurrency = spinnerSourceCurrency.selectedItem.toString()
-        val destinationCurrency = spinnerDestinationCurrency.selectedItem.toString()
-
-        // Lấy tỷ giá quy đổi
-        val sourceRate = exchangeRates[sourceCurrency] ?: 1.0
-        val destinationRate = exchangeRates[destinationCurrency] ?: 1.0
-
-        // Chuyển đổi số tiền
-        val sourceAmount = sourceAmountText.toDoubleOrNull() ?: return
-        val destinationAmount = sourceAmount * (destinationRate / sourceRate)
-
-        // Hiển thị số tiền sau khi chuyển đổi
-        etDestinationAmount.setText(String.format("%.2f", destinationAmount))
+        // Initialize Adapter and set it to RecyclerView
+        emailAdapter = EmailAdapter(emails)
+        emailRecyclerView.adapter = emailAdapter
     }
 }
