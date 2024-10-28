@@ -1,311 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF"> <!-- Nền trắng -->
+    android:padding="16dp">
 
-    <!-- Thanh tiêu đề -->
-    <LinearLayout
+    <EditText
+        android:id="@+id/etSourceAmount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
+        android:minHeight="48dp"
+    android:padding="8dp"
+    android:hint="Enter amount"
+    android:inputType="numberDecimal" />
+
+    <Spinner
+        android:id="@+id/spinnerSourceCurrency"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:minHeight="48dp"
+        android:padding="8dp" />
+
+    <EditText
+        android:id="@+id/etDestinationAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
         android:padding="8dp"
-        android:background="#000000"> <!-- Màu nền đen -->
+        android:hint="Converted amount"
+        android:focusable="false" />
 
-        <!-- Tiêu đề LifeCycle -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="LifeCycle"
-            android:textSize="18sp"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <!-- TextView hiển thị kết quả -->
-    <TextView
-        android:id="@+id/text_result"
+    <Spinner
+        android:id="@+id/spinnerDestinationCurrency"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.5"
-        android:background="#e1e1e1"
-        android:gravity="center_vertical|end"
-        android:padding="24dp"
-        android:text="0"
-        android:textColor="#000000"
-        android:textSize="80sp"
-        />
+        android:layout_height="48dp"
+        android:minHeight="48dp"
+        android:padding="8dp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:orientation="vertical"
-        android:layout_margin="3dp"
-        >
-
-        <!-- Hàng 1: CE, C, BS, / -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.75"
-            android:orientation="horizontal"
-            android:weightSum="4">
-            <Button
-                android:id="@+id/buttonCE"
-                android:text="CE"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#dedede"/>
-            <Button
-                android:id="@+id/buttonClear"
-                android:text="C"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#dedede"/>
-            <Button
-                android:id="@+id/buttonBS"
-                android:text="BS"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:background="#dedede"             android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"/>
-            <Button
-                android:id="@+id/buttonDivide"
-                android:text="/"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#dedede"/>
-        </LinearLayout>
-
-        <!-- Hàng 2: 7, 8, 9, x -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.75"
-            android:orientation="horizontal"
-            android:weightSum="4">
-
-            <Button
-                android:id="@+id/button7"
-                android:text="7"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#efefef" />
-
-            <Button
-                android:id="@+id/button8"
-                android:text="8"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#efefef" />
-
-            <Button
-                android:id="@+id/button9"
-                android:text="9"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#efefef" />
-
-            <Button
-                android:id="@+id/buttonMultiply"
-                android:text="x"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="19sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#dedede"/>
-        </LinearLayout>
-
-        <!-- Hàng 3: 4, 5, 6, - -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.75"
-            android:orientation="horizontal"
-            android:weightSum="4">
-
-            <Button
-                android:id="@+id/button4"
-                android:text="4"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#efefef"/>
-            <Button
-                android:id="@+id/button5"
-                android:text="5"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#efefef"/>
-            <Button
-                android:id="@+id/button6"
-                android:text="6"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#efefef"/>
-            <Button
-                android:id="@+id/buttonSubtract"
-                android:text="-"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#dedede"/>
-        </LinearLayout>
-
-        <!-- Hàng 4: 1, 2, 3, + -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.75"
-            android:orientation="horizontal"
-            android:weightSum="4">
-            <Button
-                android:id="@+id/button1"
-                android:text="1"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#efefef"/>
-            <Button
-                android:id="@+id/button2"
-                android:text="2"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#efefef"/>
-            <Button
-                android:id="@+id/button3"
-                android:text="3"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#efefef"/>
-
-            <Button
-                android:id="@+id/buttonAdd"
-                android:text="+"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#dedede"/>
-        </LinearLayout>
-
-        <!-- Hàng 5: 0, . , = -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.75"
-            android:orientation="horizontal"
-            android:weightSum="4">
-
-            <Button
-                android:id="@+id/button0"
-                android:text="0"
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#efefef"/>
-            <Button
-                android:id="@+id/buttonDot"
-                android:text="."
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#efefef"/>
-            <Button
-                android:id="@+id/buttonEqual"
-                android:text="="
-                android:textColor="#000000"
-                android:gravity="center"
-                android:textSize="26sp"
-                android:layout_margin="3dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="#dedede"/>
-        </LinearLayout>
-
-    </LinearLayout>
 </LinearLayout>
