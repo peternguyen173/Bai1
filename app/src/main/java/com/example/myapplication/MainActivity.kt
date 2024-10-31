@@ -1,41 +1,103 @@
 package com.example.myapplication
 
 import android.os.Bundle
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication.Email
-import com.example.myapplication.EmailAdapter
-import com.example.myapplication.R
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var emailRecyclerView: RecyclerView
-    private lateinit var emailAdapter: EmailAdapter
+    private lateinit var addressHelper: AddressHelper
+    private lateinit var spinnerProvince: Spinner
+    private lateinit var spinnerDistrict: Spinner
+    private lateinit var spinnerWard: Spinner
+    private lateinit var calendarView: CalendarView
+    private lateinit var selectedDate: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Initialize RecyclerView
-        emailRecyclerView = findViewById(R.id.recyclerViewEmails)
-        emailRecyclerView.layoutManager = LinearLayoutManager(this)
+        addressHelper = AddressHelper(this)
+        addressHelper.init()
 
-        // Sample Data in Vietnamese
-        val emails = listOf(
-            Email("Zalo", "Cập nhật điều khoản mới", "Chúng tôi đã cập nhật các điều khoản sử dụng...", "12:34 PM"),
-            Email("Ngân hàng ACB", "Thông báo tài khoản của bạn", "Tài khoản của bạn có giao dịch mới...", "11:22 AM"),
-            Email("Shopee", "Chương trình khuyến mãi 10.10", "Mua sắm thỏa thích với giảm giá 50%...", "11:04 AM"),
-            Email("Điện Máy Xanh", "Giảm giá mùa hè", "Mua sắm tiết kiệm với các ưu đãi hấp dẫn...", "10:26 AM"),
-            Email("Vietjet", "Mở bán vé máy bay giá rẻ", "Chỉ từ 199k, đặt vé ngay để nhận ưu đãi...", "9:45 AM"),
-            Email("FPT Shop", "Chương trình giảm giá cuối năm", "Giảm giá 20% cho tất cả sản phẩm công nghệ...", "8:30 AM"),
-            Email("VnExpress", "Tin tức nóng hôm nay", "Cập nhật thông tin nhanh chóng, tin cậy từ...", "7:15 AM"),
-            Email("Tiki", "Mua hàng giá sốc", "Giảm ngay 50% cho các sản phẩm công nghệ...", "6:50 AM"),
-            Email("Netflix", "Phim mới bạn không thể bỏ lỡ", "Khám phá những bộ phim hấp dẫn trên Netflix...", "5:20 AM")
-        )
+        // Initialize views
+        spinnerProvince = findViewById(R.id.spinnerProvince)
+        spinnerDistrict = findViewById(R.id.spinnerDistrict)
+        spinnerWard = findViewById(R.id.spinnerWard)
+        calendarView = findViewById(R.id.calendarView)
 
-        // Initialize Adapter and set it to RecyclerView
-        emailAdapter = EmailAdapter(emails)
-        emailRecyclerView.adapter = emailAdapter
+        setupProvinces()
+        setupCalendar()
+
+        findViewById<Button>(R.id.btnSubmit).setOnClickListener {
+            if (validateForm()) {
+                Toast.makeText(this, "Form submitted successfully!", Toast.LENGTH_LONG).show()  // Thay đổi ở đây
+            }
+        }
+    }
+
+    private fun setupProvinces() {
+        val provinces = addressHelper.provinces
+        if (provinces != null) {
+            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, provinces)
+            spinnerProvince.adapter = adapter
+
+            spinnerProvince.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                    val selectedProvince = provinces[position]
+                    setupDistricts(selectedProvince)
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {}
+            }
+        } else {
+            Toast.makeText(this, "No provinces available", Toast.LENGTH_LONG).show()  // Thay đổi ở đây
+        }
+    }
+
+    private fun setupDistricts(province: String) {
+        val districts = addressHelper.getDistricts(province) ?: return
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, districts)
+        spinnerDistrict.adapter = adapter
+
+        spinnerDistrict.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selectedDistrict = districts[position]
+                setupWards(province, selectedDistrict)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+    }
+
+    private fun setupWards(province: String, district: String) {
+        val wards = addressHelper.getWards(province, district) ?: return
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, wards)
+        spinnerWard.adapter = adapter
+    }
+
+    private fun setupCalendar() {
+        val calendarButton = findViewById<Button>(R.id.btnShowCalendar)
+        calendarButton.setOnClickListener {
+            calendarView.visibility = if (calendarView.visibility == View.GONE) View.VISIBLE else View.GONE
+        }
+
+        calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            selectedDate = "$dayOfMonth/${month + 1}/$year"
+            calendarView.visibility = View.GONE
+        }
+    }
+
+    private fun validateForm(): Boolean {
+        val mssv = findViewById<EditText>(R.id.etMSSV).text.toString()
+        val hoTen = findViewById<EditText>(R.id.etHoTen).text.toString()
+        val isChecked = findViewById<CheckBox>(R.id.cbAcceptTerms).isChecked
+
+        if (mssv.isEmpty() || hoTen.isEmpty() || !isChecked) {
+            Toast.makeText(this, "Please fill all fields and accept terms", Toast.LENGTH_LONG).show()  // Thay đổi ở đây
+            return false
+        }
+        return true
     }
 }
